@@ -1,243 +1,302 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Postranní menu a přepínání stránek</title>
-  <style>
-    /* Hlavní styl */
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      height: 100vh;
-      background-color: #f5f5f5;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seznam hnojiv a polí</title>
+    <style>
+        /* Hlavní styl */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
-    /* Postranní menu */
-    #menu {
-      width:150px; /* Optimalizujeme šířku menu */
-      background-color: #388E3C; /* Tmavě zelená */
-      color: white;
-      padding: 20px;
-      position: fixed;
-      height: 100%;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-      z-index: 100;
-      font-size: 18px;
-    }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
 
-    #menu h2 {
-      margin: 0;
-      font-size: 24px;
-      color: #fff;
-      text-align: center;
-    }
+        .table-container {
+            width: 45%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    #menu a {
-      color: white;
-      display: block;
-      margin: 15px 0;
-      text-decoration: none;
-      font-size: 18px;
-      text-align: center;
-      padding: 10px;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-    #menu a:hover {
-      background-color: #4CAF50; /* Světle zelená pro hover */
-    }
+        h1 {
+            text-align: center;
+        }
 
-    /* Hlavní obsah */
-    #content {
-      margin-left: 200px; /* Aby obsah nezačínal za menu */
-      padding: 20px;
-      width: calc(100% - 200px); /* Zajišťuje, že obsah má správnou šířku */
-      background-color: #fff;
-      overflow-x: hidden;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-    /* Aktivní stránka */
-    .page {
-      display: none;
-    }
-    .active {
-      display: block;
-    }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
 
-    /* Formulář pro přidání pole */
-    form {
-      margin-top: 40px;
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 500px;
-      margin: 0 auto;
-      font-size: 16px;
-    }
-    label {
-      font-size: 18px;
-      margin-top: 15px;
-      display: block;
-    }
-    input[type="text"], input[type="number"] {
-      padding: 15px;
-      margin: 10px 0;
-      width: 100%;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 15px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 18px;
-      width: 100%;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
 
-    /* Tabulka pro seznam polí */
-    h3 {
-      font-size: 24px;
-      margin-top: 40px;
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    tr:hover {
-      background-color: #f9f9f9;
-    }
+        .add-row-btn, .save-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
 
-    /* Responsivita pro mobilní zařízení */
-    @media (max-width: 768px) {
-      #menu {
-        width: 150px;
-      }
-      #content {
-        margin-left: 150px;
-        width: calc(100% - 150px);
-      }
-      button {
-        font-size: 16px;
-      }
-    }
-  </style>
+        .add-row-btn:hover, .save-btn:hover {
+            background-color: #45a049;
+        }
+
+        .remove-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .remove-btn:hover {
+            background-color: #e63946;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Postranní menu -->
-  <div id="menu">
-    <h2>Menu</h2>
-    <a href="javascript:void(0)" onclick="showPage('fertilizers')">Hnojiva</a>
-    <a href="javascript:void(0)" onclick="showPage('fields')">Pole</a>
-  </div>
-
-  <!-- Hlavní obsah -->
-  <div id="content">
-    <!-- Stránka pro hnojiva -->
-    <div id="fertilizers" class="page">
-      <h2>Seznam hnojiv</h2>
-      <ul>
-        <li>LAD</li>
-        <li>AMOFOS</li>
-        <li>DRASENÁ SŮL</li>
-        <li>DASA</li>
-        <li>NITROS</li>
-        <li>KIESERIT</li>
-      </ul>
+<div class="container">
+    <!-- Seznam hnojiv -->
+    <div class="table-container">
+        <h1>Seznam hnojiv</h1>
+        <table id="fertilizerTable">
+            <thead>
+                <tr>
+                    <th>Hnojivo</th>
+                    <th>Cena za tunu</th>
+                    <th>N</th>
+                    <th>P2O5</th>
+                    <th>K2O</th>
+                    <th>S</th>
+                    <th>SO3</th>
+                    <th>MgO</th>
+                    <th>kg v tuně</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted dynamically here -->
+            </tbody>
+        </table>
+        <button class="add-row-btn" onclick="addFertilizerRow()">Přidat hnojivo</button>
+        <button class="save-btn" onclick="saveFertilizerData()">Uložit hnojiva</button>
     </div>
 
-    <!-- Stránka pro pole -->
-    <div id="fields" class="page">
-      <h2>Přidat nové pole</h2>
-      <form id="fieldForm">
-        <label for="fieldName">Název pole:</label>
-        <input type="text" id="fieldName" required><br>
-
-        <label for="fieldArea">Výměra (ha):</label>
-        <input type="number" id="fieldArea" required><br>
-
-        <label for="fieldCrop">Plodina:</label>
-        <input type="text" id="fieldCrop" required><br>
-
-        <button type="button" onclick="saveField()">Uložit pole</button>
-      </form>
-
-      <h3>Seznam polí</h3>
-      <table id="fieldList">
-        <!-- Seznam polí bude zobrazen zde -->
-      </table>
+    <!-- Seznam polí -->
+    <div class="table-container">
+        <h1>Seznam polí</h1>
+        <table id="fieldTable">
+            <thead>
+                <tr>
+                    <th>Název pole</th>
+                    <th>Výměra (ha)</th>
+                    <th>Plodina</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted dynamically here -->
+            </tbody>
+        </table>
+        <button class="add-row-btn" onclick="addFieldRow()">Přidat pole</button>
+        <button class="save-btn" onclick="saveFieldData()">Uložit pole</button>
     </div>
-  </div>
+</div>
 
-  <script>
-    // Funkce pro přepínání stránek
-    function showPage(page) {
-      // Skrytí všech stránek
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(p => p.classList.remove('active'));
+<script>
+    // Data pro hnojiva
+    const initialFertilizerData = [
+        ['HNŮJ SKOTU 1. ROK', '', '', '', '', '', '', ''],
+        ['HNŮJ SKOTU 2. ROK', '', '', '', '', '', '', ''],
+        ['KOMPOST', '', '', '', '', '', '', '']
+    ];
 
-      // Zobrazení vybrané stránky
-      document.getElementById(page).classList.add('active');
+    // Data pro pole
+    const initialFieldData = [
+        ['Pole 1', '2.5', 'Pšenice'],
+        ['Pole 2', '1.8', 'Kukuřice'],
+        ['Pole 3', '3.2', 'Řepka']
+    ];
+
+    // Funkce pro přidání řádku do tabulky hnojiv
+    function addFertilizerRow() {
+        const table = document.getElementById("fertilizerTable").getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+
+        for (let i = 0; i < 9; i++) {
+            const cell = newRow.insertCell(i);
+            const input = document.createElement("input");
+            if (i === 0) {
+                input.type = "text";
+                input.placeholder = "Název hnojiva";
+            } else if (i === 1) {
+                input.type = "text";
+                input.placeholder = "Cena za tunu";
+            } else {
+                input.type = "number";
+                input.placeholder = "0";
+            }
+            cell.appendChild(input);
+        }
+
+        const removeCell = newRow.insertCell(9);
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Smazat";
+        removeButton.className = "remove-btn";
+        removeButton.onclick = function() {
+            table.deleteRow(newRow.rowIndex);
+        };
+        removeCell.appendChild(removeButton);
     }
 
-    // Funkce pro uložení pole
-    function saveField() {
-      const fieldName = document.getElementById('fieldName').value;
-      const fieldArea = document.getElementById('fieldArea').value;
-      const fieldCrop = document.getElementById('fieldCrop').value;
+    // Funkce pro uložení dat hnojiv
+    function saveFertilizerData() {
+        const table = document.getElementById("fertilizerTable").getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        const data = [];
 
-      if (fieldName && fieldArea && fieldCrop) {
-        const fieldList = document.getElementById('fieldList');
-        const row = fieldList.insertRow();
-        row.insertCell(0).textContent = fieldName;
-        row.insertCell(1).textContent = fieldArea;
-        row.insertCell(2).textContent = fieldCrop;
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Smazat';
-        deleteBtn.onclick = function() { deleteField(row); };
-        const cell = row.insertCell(3);
-        cell.appendChild(deleteBtn);
+        for (let i = 0; i < rows.length; i++) {
+            const rowData = [];
+            const cells = rows[i].getElementsByTagName('td');
 
-        // Vymazání formuláře po uložení
-        document.getElementById('fieldForm').reset();
-      } else {
-        alert('Všechna pole musí být vyplněná.');
-      }
+            for (let j = 0; j < cells.length - 1; j++) {
+                const input = cells[j].getElementsByTagName('input')[0];
+                rowData.push(input.value);
+            }
+            data.push(rowData);
+        }
+
+        console.log("Data hnojiv: ", data);
+        // Zde můžete přidat logiku pro uložení dat na server nebo do souboru
     }
 
-    // Funkce pro smazání pole
-    function deleteField(row) {
-      row.parentNode.removeChild(row);
+    // Funkce pro přidání řádku do tabulky polí
+    function addFieldRow() {
+        const table = document.getElementById("fieldTable").getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+
+        for (let i = 0; i < 3; i++) {
+            const cell = newRow.insertCell(i);
+            const input = document.createElement("input");
+            if (i === 0) {
+                input.type = "text";
+                input.placeholder = "Název pole";
+            } else if (i === 1) {
+                input.type = "number";
+                input.placeholder = "Výměra (ha)";
+            } else {
+                input.type = "text";
+                input.placeholder = "Plodina";
+            }
+            cell.appendChild(input);
+        }
+
+        const removeCell = newRow.insertCell(3);
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Smazat";
+        removeButton.className = "remove-btn";
+        removeButton.onclick = function() {
+            table.deleteRow(newRow.rowIndex);
+        };
+        removeCell.appendChild(removeButton);
     }
 
-    // Spuštění první stránky (hnojiva)
-    showPage('fertilizers');
-  </script>
+    // Funkce pro uložení dat polí
+    function saveFieldData() {
+        const table = document.getElementById("fieldTable").getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        const data = [];
+
+        for (let i = 0; i < rows.length; i++) {
+            const rowData = [];
+            const cells = rows[i].getElementsByTagName('td');
+
+            for (let j = 0; j < cells.length - 1; j++) {
+                const input = cells[j].getElementsByTagName('input')[0];
+                rowData.push(input.value);
+            }
+            data.push(rowData);
+        }
+
+        console.log("Data polí: ", data);
+        // Zde můžete přidat logiku pro uložení dat na server nebo do souboru
+    }
+
+    // Inicializace tabulky s výchozími daty
+    function initializeTables() {
+        const fertilizerTable = document.getElementById("fertilizerTable").getElementsByTagName('tbody')[0];
+        initialFertilizerData.forEach(function(rowData) {
+            const newRow = fertilizerTable.insertRow();
+            rowData.forEach(function(cellData, index) {
+                const cell = newRow.insertCell(index);
+                const input = document.createElement("input");
+                input.type = index === 0 || index === 1 ? "text" : "number";
+                input.value = cellData;
+                cell.appendChild(input);
+            });
+
+            const removeCell = newRow.insertCell(9);
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Smazat";
+            removeButton.className = "remove-btn";
+            removeButton.onclick = function() {
+                fertilizerTable.deleteRow(newRow.rowIndex);
+            };
+            removeCell.appendChild(removeButton);
+        });
+
+        const fieldTable = document.getElementById("fieldTable").getElementsByTagName('tbody')[0];
+        initialFieldData.forEach(function(rowData) {
+            const newRow = fieldTable.insertRow();
+            rowData.forEach(function(cellData, index) {
+                const cell = newRow.insertCell(index);
+                const input = document.createElement("input");
+                input.type = index === 0 ? "text" : "number";
+                input.value = cellData;
+                cell.appendChild(input);
+            });
+
+            const removeCell = newRow.insertCell(3);
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Smazat";
+            removeButton.className = "remove-btn";
+            removeButton.onclick = function() {
+                fieldTable.deleteRow(newRow.rowIndex);
+            };
+            removeCell.appendChild(removeButton);
+        });
+    }
+
+    // Spuštění inicializace tabulek při načtení stránky
+    window.onload = initializeTables;
+</script>
+
 </body>
 </html>
+
 
